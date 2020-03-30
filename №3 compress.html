@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compress</title>
+</head>
+<body>
+    <script>
+
+            // compress 
+        function compress (string) {
+          let obj = {};
+    string.split('').map(function (i) { obj[i] = obj[i]+1 || 1; });
+    return Object.entries(obj).join(',').replace(/,/g, '');
+        } console.log(compress('aaabbcccc'))
+
+            // decompress
+
+        function decompress (string) {
+let str = string.split('');
+  let arr = []; 
+  for ( let i = 0; i < str.length; i++ ) {
+    if ( Number.isInteger(Number(str[i])) == true ){
+      arr.push(String(str[i-1]).repeat(Number(str[i])))
+    }
+  } return arr.join('')
+} console.log(compress('a3b4c5'))
+    </script>
+</body>
+</html>

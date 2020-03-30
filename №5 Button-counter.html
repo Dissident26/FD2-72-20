@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Counter</title>
+    <style type="text/css">
+    .button {
+    height: 200px;
+    width: 200px;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 24px;
+    color: gray;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="button">0</button>
+    <button class="button">0</button>
+    <button class="button">0</button>
+
+<script>
+
+ 
+
+
+let butt = document.querySelectorAll('button')
+ .forEach(function(el){ 
+   
+   function Counter () {
+  let count = 0;
+  return function() {     
+    count++;
+    return count;       // счетчик рабочий
+  }
+} 
+let counter = Counter();
+
+    el.onclick = function () {
+      this.innerHTML = counter() ;
+    };
+  });
+
+</script>
+</body>
+</html>

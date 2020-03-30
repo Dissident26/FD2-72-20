@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pow and Calculate</title>
+</head>
+<body>
+
+    <script>
+
+function calculate (a) {
+    return (b) => {
+        return (c) => {
+          if( c == 0 ) {
+            return 'Ошибка! На ноль делить нельзя!'
+          }
+        return  (b == '*') ? a * c :
+                (b == '+') ? a + c :
+                (b == '-') ? a - c :
+                (b == '/') ? a / c :
+          'Неверный аргумент!';
+          
+        }
+    }
+}
+
+function pow (a){
+  return (b) => {
+      let result = a;
+
+  for (let i = 1; i < b; i++) { // циклом
+    result *= a;
+  }
+  return result;
+  }
+}
+
+function pow (a){
+  return (b) => {
+if (b == 1) {
+    return a; // рекурсией
+  } else {
+    return a * pow(a)(b - 1);
+  }
+  }
+}
+
+
+    </script>
+
+</body>
+</html>

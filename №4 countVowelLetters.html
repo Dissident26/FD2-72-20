@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>countVowelLetters</title>
+</head>
+<body>
+    <script>
+function countVowelLetters (str) {
+  let str2 = str.toLowerCase();
+  let count = 0;
+  let vowel = ['а','у','о','ы','и','э','я','ю','ё','е'];
+  for ( let i = 0; i < vowel.length; i++ ) {
+  let pos = str2.indexOf(vowel[i]);
+  while (pos !== -1) {
+    count++;
+    pos = str2.indexOf(vowel[i], pos + 1);
+    }    
+  } return count;
+}
+    </script>
+
+</body>
+</html>

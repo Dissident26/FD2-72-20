@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+do {
+  name = prompt('Укажите ваше Имя: ');
+} while ( isNaN(Number(name)) == false || name=='null' || name==''|| name.length < 2  );
+
+do {
+  lastName = prompt('Укажите ваше Отчество: ');
+} while ( isNaN(Number(lastName)) == false || lastName=='null' || lastName==''|| lastName.length < 3 );
+
+do {
+  surname = prompt('Укажите вашу Фамилию: ');
+} while ( isNaN(Number(surname)) == false || surname=='null' || surname==''|| surname.length < 3 );
+
+do {
+    age = prompt('Укажите ваш Возраст: '); 
+} while ( Number.isInteger(Number(age)) == false || age <= 0 || age.length > 2 )
+
+if ( confirm('Ваш пол Мужской?') === true ) {
+            sex = 'Ваш пол мужской'
+        } else {
+            sex = 'Ваш пол женский'
+        };
+
+        (age >= 18) ? adult = 'Вы уже совершеннолетний.' : adult = 'Вы ещё не совершеннолетний';
+
+        (age >= 60) ? retired = 'Вы уже на пенсии' : retired = 'Вы ещё не на пенсии';
+
+        let message = 'Ваше Ф.И.О.: ' + surname + ' ' + name + ' ' + lastName + '.\n'
+         + 'Ваш возраст в годах: ' + age + '.\n'
+         + 'Ваш возраст в днях: ' + (age*365 || age )+ '.\n'
+         + sex + '.\n'
+         + adult + '.\n'
+         + retired + '.\n';
+
+         alert(message);
+
+    </script>
+</body>
+</html>
