@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Methods</title>
+</head>
+<body>
+    
+<script>
+
+    function currentSums (numbers) {
+        let log = [];
+    for( let i =1; i < numbers.length+1; i++ ){
+        log.push(numbers.slice(0,i).reduce((prev, curr) => prev+ '+' + curr))
+                } console.log(log);
+            }
+
+    function firstLettersFromString(str){
+        let arr = [];
+            str.split(' ').map(function (i) {
+                arr.push(i[0]);
+            })
+        console.log(arr);
+    }
+            
+    function filterSample (arr) {
+        let result = arr.filter( i => Number.isInteger(i) && Math.sign(i) == 1 );
+            console.log(result);
+        }
+
+    function changeArray(arr) {
+
+        let length = arr.length;
+            if(arr.length % 2 == 0){
+                let slice1 = arr.slice(0,length/2);
+                let slice2 = arr.slice(length/2,length);
+            return slice2.concat(slice1);
+        } else {
+                let slice1 = arr.slice(0,(length-1)/2);
+                let mid = arr.slice((length)/2, (length+1)/2);
+                let slice2 = arr.slice((length+1)/2,length);
+            return slice2.concat(mid).concat(slice1);
+        }
+    }
+                    //test
+
+            console.log(currentSums([2, 3, 5, 7, 11, 13, 17])) 
+            console.log(firstLettersFromString('Каждый охотник желает знать, где сидит фазан.'))
+            console.log(filterSample([-1, 2, 3.5, -12, 4, 1.25, 16])) 
+            console.log(changeArray([ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]))
+            console.log(changeArray([ 1, 2, 3, 4, 5, 6, 7, 8 ]))
+
+</script>
+
+
+</body>
+</html>

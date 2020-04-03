@@ -9,146 +9,58 @@
     
 <script>
 
-function zero (n) {
+function log (n) {
+   let str =  n;
 if ( String(n).includes('*') ) {
-  return parseInt(n) * 0;
+  return 'Результат: ' + str[2]+' * '+str[0] + ' = ' + (Number(str[2]) * Number(str[0]));
 } if ( String(n).includes('/') ) {
-  return parseInt(n) / 0;
+  return 'Результат: ' + str[2]+' / '+str[0] + ' = ' + (Number(str[2]) / Number(str[0]));
 } if ( String(n).includes('+') ) {
-  return parseInt(n) + 0;
+  return 'Результат: ' + str[2]+' + '+str[0] + ' = ' + (Number(str[2]) + Number(str[0]));
 } if ( String(n).includes('-') ) {
-  return parseInt(n) - 0; 
-} else {
-  return 0;
+  return 'Результат: ' + str[2]+' - '+str[0] + ' = ' + (Number(str[2]) - Number(str[0]));
+} 
 }
-}
+
+function zero (n) {
+  return  log(n + 0) || 0;
+} 
 
 function one (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 1;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 1;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 1;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 1; 
-} else {
-  return 1;
-}
-}
+  return  log(n + 1) || 1;
+} 
 
 function two (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 2;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 2;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 2;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 2; 
-} else {
-  return 2;
-}
-}
+  return  log(n + 2) || 2;
+} 
 
 function three (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 3;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 3;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 3;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 3; 
-} else {
-  return 3;
-}
-}
+  return  log(n + 3) || 3;
+} 
 
 function four (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 4;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 4;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 4;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 4; 
-} else {
-  return 4;
-}
-}
+  return  log(n + 4) || 4;
+} 
 
 function five (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 5;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 5;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 5;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 5; 
-} else {
-  return 5;
-}
-}
+  return  log(n + 5) || 5;
+} 
 
 function six (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 6;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 6;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 6;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 6; 
-} else {
-  return 6;
-}
-}
+  return  log(n + 6) || 6;
+} 
 
 function seven (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 7;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 7;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 7;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 7; 
-} else {
-  return 7;
-}
-}
+  return  log(n + 7) || 7;
+} 
 
 function eight (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 8;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 8;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 8;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 8; 
-} else {
-  return 8;
-}
-}
+  return  log(n + 8) || 8;
+} 
 
 function nine (n) {
-if ( String(n).includes('*') ) {
-  return parseInt(n) * 9;
-} if ( String(n).includes('/') ) {
-  return parseInt(n) / 9;
-} if ( String(n).includes('+') ) {
-  return parseInt(n) + 9;
-} if ( String(n).includes('-') ) {
-  return parseInt(n) - 9; 
-} else {
-  return 9;
+  return log(n + 9) || 9;
 }
-}
-
 function plus (n){
   return  n + '+';
 }
@@ -164,6 +76,11 @@ function times (n) {
 function dividedBy (n) {
     return n + '/';
 }
+
+console.log(seven(times(five())))
+console.log(four(plus(nine())))
+console.log(eight(minus(three())))
+console.log(six(dividedBy(two())))
 
 </script>
 
