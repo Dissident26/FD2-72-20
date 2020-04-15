@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaining</title>
+</head>
+<body>
+    
+<script>
+
+    function getCounter (n) {
+        let counter = n;
+        let container = {};
+    container.log = function (){
+        console.log(counter);
+        return this;
+      }
+    container.count = function (n){
+        counter += n;
+        return this;
+      }
+    container.reset = function (){
+        counter = 0;
+        return this;
+      }
+        return container;
+          }
+
+let counter = getCounter(5);
+  counter.log() // 5
+  .count(4)
+  .log() // 9
+  .count(3)
+  .log() // 12
+  .reset()
+  .log() // 0
+  .count(8)
+  .log(); // 8
+
+</script>
+
+
+</body>
+</html>

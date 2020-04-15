@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+</head>
+<body>
+    
+<a title="google.com" href="https://www.google.com/">google.com</a><br>
+<a title="mail.ru" href="https://www.mail.ru/">mail.ru</a><br>
+<a title="learn.javascript.ru" href="https://learn.javascript.ru/">learn.javascript.ru</a><br>
+
+<input type="text" value="Text Input #1" class="log"><br>
+<input type="text" value="Text Input #2" class="log"><br>
+<input type="text" value="Text Input #3" class="log"><br>
+
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+
+<input type="text" placeholder="Your text here..." class="validation" data-length="5"><span>=> data-length="5"</span><br>
+<input type="text" placeholder="Your text here..." class="validation" data-length="7"><span>=> data-length="7"</span><br>
+<input type="text" placeholder="Your text here..." class="validation" data-length="3"><span>=> data-length="3"</span><br>
+
+<script>
+
+    // #1
+    let links = document.querySelectorAll('a');
+    links.forEach(el => {
+        el.addEventListener('mouseover', showHref);
+        el.addEventListener('mouseout', showLink);
+    function showHref(){
+        this.innerHTML = this.title + `(${this.href})`;
+    };
+    function showLink(){
+        this.innerHTML = this.title;
+        this.removeEventListener('mouseover', showHref);
+        this.removeEventListener('mouseout', showLink);
+        };
+    });
+    
+
+    // #2
+    let inputs = document.querySelectorAll('.log');
+    inputs.forEach(el => {
+        el.addEventListener('click', showValue, {once : true});
+    function showValue(){
+        console.log(this.value)
+    }
+    })
+
+    // #3
+    let paragraphs = document.querySelectorAll('p');
+    paragraphs.forEach( el => {
+        el.addEventListener('click', square, {once : true})
+        function square(){
+            this.innerHTML = Math.pow(this.innerHTML, 2)
+        }
+    })
+
+    // #4
+    let inpValidation = document.querySelectorAll('.validation');
+    inpValidation.forEach(el => {
+        el.addEventListener('blur', validate)
+        function validate() {
+            (this.value.length == this.dataset.length) ? this.style.borderColor = 'green' : this.style.borderColor = 'red';
+        }
+    })
+</script>
+
+</body>
+</html>

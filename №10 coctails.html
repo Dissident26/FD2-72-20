@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="HashStorage.js"></script>
+    <style>
+        * {
+        margin: auto;
+        }
+        .menu {
+            position: relative;
+            display: flex;
+        }
+        .menu img{
+            width: 200px;
+            height: 200px;
+        }
+        .menu button {
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            font-size: 24px;
+            color: gray;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+        }
+        #cocktails {
+        width: 500px;
+        color: gray;
+        }
+        #cocktails caption {
+          padding-top: 5%;
+          padding-bottom: 5%;
+          font-size: 24px;
+        }
+        .item {
+          padding-top: 2.5%;
+          padding-bottom: 2.5%;
+        }
+    </style>
+    <title>Cocktails</title>
+</head>
+<body>
+
+    <div class="menu">
+
+        <img src="assets/shaker.png" alt="shaker">
+
+        <button id="add-recipe" onclick="addRecipe()">Добавить рецепт</button>
+        <button id="show-recipe" onclick="showRecipe()">Показать напиток</button>
+        <button id="show-all" onclick="showAll()">Все напитки</button>
+        <button id="delete-recipe" onclick="deleteRecipe()">Удалить рецепт</button>
+
+        <img src="assets/cocktail.png" alt="cocktail">
+
+    </div>
+
+    <div id="cocktails"></div>
+    
+<script>
+
+    function addRecipe(){       //добавиь рецепт
+      do{
+        name = prompt('Введите название напитка:')
+      } while (name == 'null' || name == '' || name.length < 3)
+      do{
+        ingr = prompt('Введите ингридиенты через запятую: ')
+      } while (ingr == null || ingr == '' || ingr.split(',').length < 2)
+      do{
+        recipe = prompt('Укажите способ приготовления: ');
+      }while (recipe == null || recipe == '' || recipe.length < 5)
+        CoctailsStorage.addValue(name, {"Алкогольный" : confirm("Хотите добавить алкогольный напиток?"),
+        "Состав" : ingr.split(','),
+        "Рецепт" : [recipe]})
+    };
+
+    function showRecipe(){      //показать рецепт
+      name = prompt('Укажите имя искомого напитка: ')
+      if(name == ''){
+        alert(`Ошибка! Введите критерий поиска.`)
+      }
+
+  let container = CoctailsStorage.getValue(name);
+  
+  let alcohol = container["Алкогольный"];
+  let recipe = container["Рецепт"];
+  let ingr = container["Состав"];
+      function alcoName(n){
+      return  "Алкогольный" || "Безалкогольный";
+      }
+let template = `<table><caption>${alcoName(alcohol)} коктейль "${name}"</caption><tr><td class="item">Состав: </td></tr>`;
+for (let i = 0; i < ingr.length; i++){
+  template += `<tr><td> - ${ingr[i]}</td></tr>`;
+}
+template +=`<tr><td class="item">Способ приготовления: </tr></td><tr><td>${recipe}</tr></td></table>`
+
+let div = document.getElementById('cocktails');
+div.innerHTML = template;
+       
+    };
+
+    function showAll(){         //показть все
+        alert(CoctailsStorage.getKeys())
+    };
+
+    function deleteRecipe(){    //удалить рецепт
+        name = prompt('Введите имя напитка, который нужно удалить: ');
+        (name !== null && CoctailsStorage.getValue(name) !== undefined) ? 
+        CoctailsStorage.deleteValue(name) + alert(`Позиция "${name}" удалена!`) : 
+          alert(`Ошибка! Позиция "${name}" не найдена`);
+    };
+
+    //рецепты
+
+    let CoctailsStorage = new HashStorage('Мохито', {"Алкогольный" : true,
+    "Состав" : ['Белый ром 50мл', 'Содовая 100мл', 'Лайм 80гр','Мята 3гр','Дробленый лёд 200гр'],
+    "Рецепт" : 'Положить в хайбол лайм и подавить мадлером. Добавить мяту. Наполнить бокал дробленым льдом доверху. Добавь сахарный сироп  и белый ром, долить содовую доверху и размешать коктейльной ложкой. Украсить веточкой мяты и долькой лайма'});     
+    
+    CoctailsStorage.addValue('Негрони', {"Алкогольный" : true,
+    "Состав" : ['Джин 30мл', 'Красный вермут 30мл', 'Биттер Campari 30мл', 'Апельсин 30гр', 'Лёд в кубиках 120гр'],
+    "Рецепт" : 'Наполнить рокс кубиками льда доверху. Налить в бокал красный вермут и биттер, добавить джин и размешать коктейльной ложкой. Украсить кружком апельсина'});
+
+    CoctailsStorage.addValue('Апероль Шприц', {"Алкогольный" : true,
+    "Состав" : ['Апероль Aperol 100мл', 'Просекко 100мл', 'Содовая 20мл', 'Лёд в кубиках 60гр'],
+    "Рецепт" : 'Наполнить бокал для вина льдом. Налить в бокал просекко и апероль. Добавить содовой и размешать коктейльной ложкой. Украсить долькой апельсина.'});
+
+    CoctailsStorage.addValue('Шмель', {"Алкогольный" : false,
+    "Состав" : ['Карамельный сироп 15мл', 'Апельсиновый сок 100мл', 'Кофе эспрессо 50мл', 'Апельсин 40гр', 'Лёд в кубиках 180гр'],
+    "Рецепт" : 'Наполнить хайбол кубиками льда доверху. Налить апельсиновый сок и карамельный сироп, добавить эспрессо и размешать коктейльной ложкой. Украсить долькой апельсина.'});
+
+    CoctailsStorage.addValue('Гоголь-моголь', {"Алкогольный" : false,
+    "Состав" : ['Желток перепелиного яйца 5шт', 'Молоко 150мл', 'Сливки 50мл', 'Мёд 20гр', 'Мускатный орех молотый 1гр'],
+    "Рецепт" : 'Смешать в питчере желтки и мед. Добавить сливки и молоко. Нагреть коктейль паром от кофемашины, не доводя до кипения. Перелей в бокал для ирландского кофе. Добавь щепотку мускатного ореха'});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable List</title>
+</head>
+<body>
+    <script>
+
+let div = document.createElement('div');
+        div.setAttribute('id','div');       //создаем div
+        document.body.append(div);
+        document.getElementById('div').innerHTML = '<ol id="list"><li>First</li><li>Second</li><li>Third</li></ol><input type="input" id="input" placeholder="Your input here..."><button id="add" onclick="Add()">Add</button><button id="remove" onclick="Remove()">Remove</button>'
+
+        let ol = document.getElementById("list")
+        let input = document.getElementById('input'); //создаем базу элементов
+        let butt = document.getElementById('remove');
+
+ol.onclick = function(event) {
+  let target = event.target;    //делегируем событие
+  if (target.tagName != 'LI') return;
+  edit(target)
+}
+function edit(target){
+  target.innerHTML = `<input id="popup" type="input" value = ${target.innerHTML}>`
+      let popup = document.getElementById('popup');     //замена ли на инпут и обратно
+      popup.onblur = function (){ 
+      this.replaceWith(this.value);
+}
+      popup.focus();
+      popup.setSelectionRange(popup.value.length,popup.value.length); //перевод каретки
+    }
+
+function Remove(){          //удаляет элементы)
+    ol.removeChild(ol.lastChild)
+    if ( ol.hasChildNodes() == false ) { 
+   butt.disabled = true;
+    } 
+}
+function Add(){         //добавляет элементы
+    let li = document.createElement("li");
+    li.innerHTML = input.value;
+    if(input.value !== ''){
+      ol.appendChild(li);
+      input.value = '';
+    }}
+    </script>
+</body>
+</html>

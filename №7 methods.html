@@ -9,24 +9,28 @@
     
 <script>
 
-    function currentSums (numbers) {
-        let log = [];
-    for( let i =1; i < numbers.length+1; i++ ){
-        log.push(numbers.slice(0,i).reduce((prev, curr) => prev+ '+' + curr))
-                } console.log(log);
+function currentSums (numbers) {
+  let result = [];
+  let log = [];
+  let str = numbers[0];
+  
+  numbers.reduce((acc, curr, i) => {
+    result.push(acc + curr);
+    str += '+'+curr;
+    log.push(str);
+    return acc + curr;
+          })
+  return `[${log}] = [${result}]`;
             }
 
     function firstLettersFromString(str){
-        let arr = [];
-            str.split(' ').map(function (i) {
-                arr.push(i[0]);
-            })
-        console.log(arr);
+        let arr = str.split(' ').map( (i) => i[0] )
+        return arr;
     }
             
     function filterSample (arr) {
-        let result = arr.filter( i => Number.isInteger(i) && Math.sign(i) == 1 );
-            console.log(result);
+        let result = arr.filter( i => Number.isInteger(i) && i > 0 );
+            return result;
         }
 
     function changeArray(arr) {

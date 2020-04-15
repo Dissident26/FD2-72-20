@@ -20,7 +20,9 @@
         font-size: 36px;
         color: gray;
     }
-    
+    a {
+        cursor: pointer;
+    }
     </style>
 </head>
 <body>
@@ -31,10 +33,18 @@
    div.setAttribute('id','calendar');       //создаем div
    document.body.append(div);
 
+
+let currentDate = new Date();
+let currentYear = currentDate.getFullYear();
+let currentMonth = currentDate.getMonth();
+let date = new Date(currentYear, currentMonth)
+year = date.getFullYear();
+month = date.getMonth() + 1;
+
     function createCalendar(year, month) {
 
             let date = new Date(year, month-1); //шаблон таблицы
-            let table = `<table><caption>${monthName(month-1)+ ' '} ${year + ' годa'}</caption><tr><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr><tr>`;
+            let table = `<table><tr><td><a onclick="changeYear(-1)">&lt&lt</a></td><td><a onclick="decrMonth(-1)">&lt</a></td><td colspan ="3">${monthName(month-1)+ ' '} ${year + ' годa'}</td><td><a onclick="changeMonth(+1)">&gt</a></td><td><a onclick="changeYear(+1)">&gt&gt</a></td><tr><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr><tr>`              
 
         for (let i = 0; i < getDay(date); i++) { // +пустые ячейки до начала месяца
         table += '<td></td>';
@@ -71,15 +81,30 @@ let months = ['Январь', 'Февраль', 'Март', 'Апрель', 'М�
 return months[n]
 }
 
-do {
-  year = prompt('Введите год: ')
-  } while ( Number.isInteger(Number(year)) == false || year <= 0 || year.length > 4 )
-  do {
-  month = prompt('Введите месяц: ')
-  } while ( Number.isInteger(Number(month)) == false || month <= 0 || month > 12 || month.length > 2 )
+
 
 createCalendar(year, month);       //вставляем таблицу в div
 
+date.setDate(date.getDate() - 1);
+
+function changeYear(n){
+    createCalendar(year += n, month)        // +/- год работает как надо
+}
+function changeMonth(n){
+   if(month > 11){
+        year ++             // +месяц работает как надо
+        month = 0  
+    }
+    console.log(month)
+    createCalendar(year, month += n)
+}
+function decrMonth(n){
+    if(month < 2){          // - месяц работает через одно место
+        month = 13;
+        year --
+    }
+    createCalendar(year, month += n)
+}
     </script>
     
 </body>

@@ -9,23 +9,24 @@
     <script>
 
             // compress 
-        function compress (string) {
+
+         function compress (string) {
           let obj = {};
     string.split('').map(function (i) { obj[i] = obj[i]+1 || 1; });
-    return Object.entries(obj).join(',').replace(/,/g, '');
+    return string + ' => ' + Object.entries(obj).join(',').replace(/,/g, '');
         }
 
             // decompress
 
-  function uncompress (n){
+ function uncompress (n){
     let arr = [];
     for(let i = 0; i < n.length; i++){
     if(isNaN(Number(n[i]))){
     arr.push( n[i].repeat(parseInt(n.slice(i+1))))
       } if (n.length == 1){
-        return n;
+        return n + ' => ' + n;
       }
-    } return arr.join('');
+    } return n + ' => ' + arr.join('');
   }
           //tests
 

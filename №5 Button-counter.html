@@ -24,24 +24,23 @@
 <script>
 
  
-
-
-let butt = document.querySelectorAll('button')
- .forEach(function(el){ 
-   
-   function Counter () {
+function counter () {
   let count = 0;
   return function() {     
     count++;
     return count;       // счетчик рабочий
   }
-} 
-let counter = Counter();
+}
 
+let butt = document.querySelectorAll('button')
+ .forEach(function(el){ 
+  let count = counter();
     el.onclick = function () {
-      this.innerHTML = counter() ;
+      this.innerHTML = count() ;
     };
   });
+
+  
 
 </script>
 </body>
