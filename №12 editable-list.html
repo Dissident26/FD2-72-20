@@ -11,7 +11,7 @@
 let div = document.createElement('div');
         div.setAttribute('id','div');       //создаем div
         document.body.append(div);
-        document.getElementById('div').innerHTML = '<ol id="list"><li>First</li><li>Second</li><li>Third</li></ol><input type="input" id="input" placeholder="Your input here..."><button id="add" onclick="Add()">Add</button><button id="remove" onclick="Remove()">Remove</button>'
+        document.getElementById('div').innerHTML = '<ol id="list"><li>First</li><li>Second</li><li>Third</li></ol><input type="input" id="input" placeholder="Your input here..."><button id="add" onclick="add()">Add</button><button id="remove" onclick="remove()">Remove</button>'
 
         let ol = document.getElementById("list")
         let input = document.getElementById('input'); //создаем базу элементов
@@ -19,7 +19,7 @@ let div = document.createElement('div');
 
 ol.onclick = function(event) {
   let target = event.target;    //делегируем событие
-  if (target.tagName != 'LI') return;
+ if (target.tagName != 'LI') return; //обязательная проверка!
   edit(target)
 }
 function edit(target){
@@ -32,18 +32,19 @@ function edit(target){
       popup.setSelectionRange(popup.value.length,popup.value.length); //перевод каретки
     }
 
-function Remove(){          //удаляет элементы)
+function remove(){          //удаляет элементы)
     ol.removeChild(ol.lastChild)
-    if ( ol.hasChildNodes() == false ) { 
+    if ( ol.hasChildNodes() == false ) {    //проверка на наличиие обьектов в ол
    butt.disabled = true;
     } 
 }
-function Add(){         //добавляет элементы
+function add(){         //добавляет элементы
     let li = document.createElement("li");
     li.innerHTML = input.value;
-    if(input.value !== ''){
+    if(input.value !== ''){   //проверка на пустую строку
       ol.appendChild(li);
       input.value = '';
+      butt.disabled = false;
     }}
     </script>
 </body>

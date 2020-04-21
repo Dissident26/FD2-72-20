@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="calendar-template.js"></script>
+    <title>Calendar With Selectors</title>
+    <style>
+        
+    table {
+        border-collapse: collapse;
+    }
+    td,
+    th {
+        border: 3px solid gray;
+        padding: 10px;
+        text-align: center;
+        font-size: 36px;
+    }
+    caption {
+        font-size: 36px;
+        color: gray;
+    }
+    .active-td {
+            color: red;
+            background-color: grey;
+        }
+
+    </style>
+</head>
+<body>
+    
+<script >
+
+    let selectMonth = `<select id='month-select' onchange="check()">`;
+    for( let i = 0; i <= 11; i++){      //селекты для месяцев
+        selectMonth += `<option>${monthName(i)}</option>`
+    } selectMonth += `<option hidden selected>Укажите Месяц</option></select>`
+
+    let selectYear = `<select id ='year-select' onchange="check()">`
+    for( let i = 1980; i <= 2030; i++){
+        selectYear += `<option>${i}</option>`       //селекты для лет
+    } selectYear += `<option hidden selected>Укажите Год</option></select>`
+    
+    let menuDiv = document.createElement('div');
+    menuDiv.setAttribute('id','menu');       //создаем div
+    menuDiv.innerHTML = `<header><button id="add">Создать календарь</button> ${selectMonth} ${selectYear} <button id="remove">Удалить</button></header><br>`
+    document.body.append(menuDiv); 
+
+let selectedMonth = function () { //хз почему не работает с просто переменной
+    let selected = document.getElementById('month-select').selectedIndex; //возвращает № месяца
+        return selected;
+    }
+
+let selectedYear = function (){
+    let selected = document.getElementById('year-select').selectedIndex;
+    let options = document.getElementById('year-select').options;       //возвращает год
+        return options[selected].innerHTML
+    }
+
+    let btnAdd = document.getElementById('add')
+    btnAdd.addEventListener('click', add)
+    btnAdd.disabled = true;     //всё к кнопке "добавить"
+    function check (){
+        (selectedMonth() == 12 || selectedYear() == 'Укажите Год') ? btnAdd.disabled = true : btnAdd.disabled = false;
+    }
+
+function add (){
+    let div = document.createElement('div');
+    div.setAttribute('class','calendar');
+    document.body.append(div); 
+    createCalendar (div, selectedYear(), selectedMonth() + 1 )
+    btnRemove.disabled = false;
+
+    let table = document.getElementsByClassName('calendar');
+    
+    for ( let i = 0; i < table.length; i++){
+        console.log(table[i])
+        table[i].addEventListener('click', (event) => {      //вешаем ивент на таблицу
+    table[i].querySelectorAll('td').forEach(el => el.classList.remove('active-td'));       //убираем клас с каждого тд
+    if (event.target.tagName !== 'TD') return; //клик только на тд
+      event.target.classList.add('active-td');  //добавляем класс к тд по клику
+        });
+    }
+  
+}
+
+    let btnRemove = document.getElementById('remove');
+    btnRemove.addEventListener('click', remove)     //все к кнопке remove
+    btnRemove.disabled = true;
+
+function remove (){
+    let calendar = document.querySelectorAll('.calendar');
+    (calendar.length < 2 ) ? (btnRemove.disabled = true, calendar[0].remove()) : calendar[0].remove();
+}
+
+
+
+
+</script>
+
+</body>
+</html>

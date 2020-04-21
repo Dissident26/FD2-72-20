@@ -57,14 +57,14 @@
 
     <div id="cocktails"></div> 
     
-<script>
+<script>      // допилить toLowerCase();
 
     function addRecipe(){       //добавиь рецепт
       do{
         name = prompt('Введите название напитка:')
       } while (name == 'null' || name == '' || name.length < 3)
       do{
-        ingr = prompt('Введите ингридиенты через запятую: ')
+        ingr = prompt('Введите ингридиенты через запятую: ') //сделать через push
       } while (ingr == null || ingr == '' || ingr.split(',').length < 2)
       do{
         recipe = prompt('Укажите способ приготовления: ');
@@ -102,6 +102,7 @@ let div = document.getElementById('cocktails');
 div.innerHTML = template;
      }
   };
+
     function showAll(){      //показть все
       (CoctailsStorage.getKeys().length == 0) ? alert('Список напитков пуст!') :
       alert(CoctailsStorage.getKeys().join(" \n"));

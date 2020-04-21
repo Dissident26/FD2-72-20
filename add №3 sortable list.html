@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sortable List</title>
+    <style>
+    .sort-list {
+        position: absolute;
+        left: 25%;
+        top: 25%;
+        width: 250px;
+        height: 500x;
+        border: 5px solid black;
+    }
+    .item {
+        cursor: pointer;
+        color:black;
+        padding: 5px;
+        display: block;
+        border-radius: 5px;
+        margin: 5px;
+        border: 2px solid;
+        text-align: center;
+        
+    }
+    .hold {
+        border: dashed;
+    }
+    .over {
+        background-color: grey;
+    }
+    </style>
+</head>
+<body>
+    
+    <div class="sort-list" id="sort-list">
+
+        <a draggable="true" class="item" id="item-4">D</a>
+        <a draggable="true" class="item" id="item-6">F</a>
+        <a draggable="true" class="item" id="item-2">B</a>
+        <a draggable="true" class="item" id="item-3">C</a>
+        <a draggable="true" class="item" id="item-7">G</a>
+        <a draggable="true" class="item" id="item-5">E</a>
+        <a draggable="true" class="item" id="item-1">A</a>
+        
+    </div>
+<script>
+let items = document.getElementsByClassName('item');    //задаем переменные
+let list = document.getElementById('sort-list'); 
+
+list.ondragstart = function(event) {    //старт ивента дрэг
+  let target = event.target;
+ if (target.tagName != 'A') return;
+event.dataTransfer.setData("text", event.target.id);
+target.classList.add('hold');           //+класс при удержании элемента
+}
+list.addEventListener("dragover", function(event) { 
+    event.preventDefault();     //важно!
+    let target = event.target;
+    if (target.tagName != 'A') return;
+    event.target.classList.add('over') //+класс при удержании над дроп зоной
+});
+list.addEventListener('dragleave', function (event) {   
+    event.target.classList.remove('over')   //-класс после выхда из дроп зоны
+})
+list.addEventListener('drop', function (event){ // ивент дроп + задание дроп зоны
+    let target = event.target;
+    let id = document.getElementById(event.dataTransfer.getData('text'));
+    target.classList.remove('over')     //-класс при ивенте
+    if (target.tagName != 'A' || target == id) return; //нельзя дропнуть на себя же
+    list.replaceChild(target.cloneNode(true), id)   //меняем элементы местами
+    list.replaceChild(id, target)
+    id.classList.remove('hold')     //-класс у начального элемента
+
+    let str = '';
+for( let i = 0; i < items.length; i++){     //проверка на верный порядок
+    str += items[i].innerHTML
+} (str === str.split('').sort().join('')) ? list.style.borderColor = 'green' : list.style.borderColor = 'black';
+
+})
+
+
+</script>
+
+</body>
+</html>
