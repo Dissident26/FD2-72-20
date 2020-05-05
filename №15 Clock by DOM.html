@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <title>Clock By DOM</title>
+    <style>
+#clock-face {
+    position: relative;
+    border-radius: 50%;
+    border: 2px solid black;
+    }
+.number {
+    border: 1px solid black;
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;    /* флекс только чтоб выровнять цифры  */
+    justify-content: center;
+}
+#hour-arrow{
+    background-color:black;
+    position: absolute;
+}
+#minute-arrow{
+    background-color:dimgray;
+    position: absolute;
+}
+#seconds-arrow{
+    background-color:red;
+    position: absolute;
+}
+    </style>
+</head>
+<body>
+    
+<script>
+
+    let radius = 200;   //отклонение от центра циферблата
+    let angle = 30;     // угол позиционирования цифр
+    let clockFaceSize = 500; // размер циферблата
+    let numbersSize = 50;   //размер кругов цифр
+    let hourArrowHeight = 5; //высота часовой стрелки
+    let hourArrowWidth = 125; // ширина часовой стрелки
+    let minuteArrowHeight = 3;//высота минутной стрелки
+    let minuteArrowWidth = 175; // ширина минутной стрелки
+    let secondsArrowHeight = 1; //высота секундной стрелки
+    let secondsArrowWidth = 200; //ширина секундной стрелки
+
+function createClockTemplate (){    //функция для создания шаблона циферблата
+
+    let clock = document.createElement('div');
+        clock.setAttribute('id','clock')      //создаем div-родитель
+    document.body.append(clock);
+
+    let clockFace = document.createElement('div');
+    clockFace.setAttribute('id', 'clock-face'); // создаем циферблат
+
+    clock.appendChild(clockFace);
+
+    clockFace.style.width = clockFaceSize +'px'; // устанавливаем размер циферблата
+    clockFace.style.height = clockFaceSize +'px';
+
+    let clockFaceCenterX = clockFace.offsetLeft + clockFace.offsetWidth / 2; // центр циферблата
+    let clockFaceCenterY = clockFace.offsetTop + clockFace.offsetHeight / 2;
+
+    for ( let i = 1; i <= 12; i++){
+
+        let numX = clockFaceCenterX + radius * Math.sin((angle* i) / 180 * Math.PI) ; //центр цифр
+        let numY = clockFaceCenterY - radius * Math.cos((angle * i) / 180 * Math.PI); 
+
+        let number = document.createElement('div');
+            number.setAttribute('class', 'number'); //див для цифр
+            number.innerHTML = i;
+
+            clock.appendChild(number)
+
+            number.style.width = numbersSize +'px'; // устанавливаем размер кругов цифр
+            number.style.height = numbersSize +'px';
+
+            number.style.left = Math.round(numX - number.offsetWidth / 2)+"px";   //позиционирование относительно родителя
+            number.style.top = Math.round(numY - number.offsetHeight / 2)+"px";
+        
+    }
+
+    function createArrowsTemplate () {      //вложеная функция для создания шаблона стрелок
+
+        let secondsArrow = document.createElement('div');
+            secondsArrow.setAttribute('id', 'seconds-arrow');
+        clock.appendChild(secondsArrow)
+
+        secondsArrow.style.width = secondsArrowWidth + 'px'; // устанавливаем размер секундной стрелки
+        secondsArrow.style.height = secondsArrowHeight / 2 + 'px';
+
+        secondsArrow.style.left = clockFaceCenterX + "px";  //позиционируем стрелку
+        secondsArrow.style.top = clockFaceCenterY - secondsArrowHeight / 2 + "px";
+
+        let minuteArrow = document.createElement('div');
+            minuteArrow.setAttribute('id', 'minute-arrow');
+        clock.appendChild(minuteArrow)
+
+        minuteArrow.style.width = minuteArrowWidth + 'px'; // устанавливаем размер минутной стрелки
+        minuteArrow.style.height = minuteArrowHeight  + 'px';
+
+        minuteArrow.style.left = clockFaceCenterX + "px";  //позиционируем стрелку
+        minuteArrow.style.top = clockFaceCenterY  - minuteArrowHeight / 2 + "px";
+
+        let hourArrow = document.createElement('div');
+            hourArrow.setAttribute('id', 'hour-arrow');
+        clock.appendChild(hourArrow)
+
+        hourArrow.style.width = hourArrowWidth +'px'; // устанавливаем размер часовой стрелки
+        hourArrow.style.height = hourArrowHeight +'px';
+
+        hourArrow.style.left = clockFaceCenterX  + "px";  //позиционируем стрелку
+        hourArrow.style.top = clockFaceCenterY  - hourArrowHeight / 2 + "px";
+
+}   createArrowsTemplate()
+
+    } createClockTemplate();
+
+    setInterval(clockWork, 1000); // интервал на вызов функции каждую сек
+
+function clockWork (){      //функция на часы
+    let date = new Date();
+    let sec = date.getSeconds();
+    let min = date.getMinutes();
+    let hour = date.getHours();
+    let count = 270; // стрелки на 12
+
+    let secondsArrow = document.getElementById('seconds-arrow')
+    let minuteArrow = document.getElementById('minute-arrow');
+    let hourArrow = document.getElementById('hour-arrow');
+
+    secondsArrow.style.transformOrigin = `top left`;
+    secondsArrow.style.transform = 'rotate('+ Number(count + (sec * 6)) +'deg)'; // 360гр / 60 сек = 6гр/сек
+
+    minuteArrow.style.transformOrigin = `top left`;
+    minuteArrow.style.transform = 'rotate('+ Number(count + (min * 6)) +'deg)'; // 360гр / 60 мин = 6гр/мин
+
+    hourArrow.style.transformOrigin = `top left`;
+    hourArrow.style.transform = 'rotate('+ Number(count + (hour * 30)) +'deg)'; // 360гр / 12 ч = 30гр/час
+
+   } clockWork() // вызываю сразу чтоб всё было на местах после загрузки
+    
+</script>
+
+</body>
+</html>

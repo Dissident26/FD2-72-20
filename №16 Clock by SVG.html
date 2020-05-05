@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock By SVG</title>
+    <style>
+        
+    </style>
+</head>
+<body>
+    <script>
+
+    let radius = 200;   //отклонение от центра циферблата
+    let angle = 30;     // угол позиционирования цифр
+    let clockFaceSize = 500; // размер циферблата
+    let numbersSize = 50;   //размер кругов цифр
+    let hourArrowHeight = 5; //высота часовой стрелки
+    let hourArrowWidth = 125; // ширина часовой стрелки
+    let minuteArrowHeight = 3;//высота минутной стрелки
+    let minuteArrowWidth = 175; // ширина минутной стрелки
+    let secondsArrowHeight = 1; //высота секундной стрелки
+    let secondsArrowWidth = 200; //ширина секундной стрелки
+    const svgNS = "http://www.w3.org/2000/svg";  //svg инструкции
+
+    function createClockTemplate (){    //функция для создания шаблона циферблата
+        let clock = document.createElementNS(svgNS, 'svg'); //первый парам оч важный!
+            clock.setAttribute('id', 'clock');
+            clock.setAttribute('height', clockFaceSize);
+            clock.setAttribute('width', clockFaceSize); //создаем родительский див
+        document.body.append(clock);
+
+
+    let clockFace = document.createElementNS(svgNS,"circle");
+        clockFace.setAttributeNS(null,"cx", clockFaceSize / 2);
+        clockFace.setAttributeNS(null,"cy", clockFaceSize / 2);
+        clockFace.setAttributeNS(null,"r", clockFaceSize / 2); // рисуем циферблат
+        clockFace.setAttributeNS(null,"fill","none");
+        clockFace.setAttributeNS(null,"stroke","black");
+    clock.appendChild(clockFace);
+
+for (let i = 1; i <= 12; i++){
+
+    let numX = clockFaceSize / 2 + radius * Math.sin((angle* i) / 180 * Math.PI) ; //центр цифр
+    let numY = clockFaceSize / 2 - radius * Math.cos((angle * i) / 180 * Math.PI); 
+
+    let number = document.createElementNS(svgNS, "circle");
+        number.setAttributeNS(null,"cx", numX);
+        number.setAttributeNS(null,"cy", numY);
+        number.setAttributeNS(null,"r", numbersSize / 2); // рисуем круги цифр
+        number.setAttributeNS(null,"fill","none");
+        number.setAttributeNS(null,"stroke","black");
+
+    let count = document.createElementNS(svgNS, "text");
+        count.setAttribute('x', numX);
+        count.setAttribute('y', numY);
+        count.setAttribute('fill', 'black'); //добавляем сами цифры
+        count.setAttribute('text-anchor', 'middle'); //выравниваем по горизонтали
+        count.setAttribute('alignment-baseline', 'middle'); //выравниваем по вертикали
+        count.textContent = i;
+        clock.appendChild(count);
+
+    clock.appendChild(number)
+}       
+
+function createArrowsTemplate () {      //вложеная функция для создания шаблона стрелок
+
+        let secondsArrow = document.createElementNS(svgNS, "line"); //рисуем секундную стрелку
+            secondsArrow.setAttribute('id', 'seconds-arrow');
+            secondsArrow.setAttributeNS(null,"x1", clockFaceSize / 2);
+            secondsArrow.setAttributeNS(null,"x2", clockFaceSize / 2);  //позиционируем
+            secondsArrow.setAttributeNS(null,"y1", clockFaceSize / 2);
+            secondsArrow.setAttributeNS(null,"y2", secondsArrowWidth + clockFaceSize / 2);
+            secondsArrow.setAttributeNS(null,"stroke", "red");
+            secondsArrow.setAttributeNS(null,"stroke-width", secondsArrowHeight);
+        clock.appendChild(secondsArrow)
+
+    let minuteArrow = document.createElementNS(svgNS, "line");  //рисуем минутную стрелку
+            minuteArrow.setAttribute('id', 'minute-arrow');
+            minuteArrow.setAttributeNS(null,"x1", clockFaceSize / 2);
+            minuteArrow.setAttributeNS(null,"x2", clockFaceSize / 2);   //позиционируем
+            minuteArrow.setAttributeNS(null,"y1", clockFaceSize / 2);
+            minuteArrow.setAttributeNS(null,"y2", minuteArrowWidth + clockFaceSize / 2);
+            minuteArrow.setAttributeNS(null,"stroke", "dimgray");
+            minuteArrow.setAttributeNS(null,"stroke-width", minuteArrowHeight);
+        clock.appendChild(minuteArrow)
+
+    let hourArrow = document.createElementNS(svgNS, "line");    //рисуем часовую стрелку
+            hourArrow.setAttribute('id', 'hour-arrow');
+            hourArrow.setAttributeNS(null,"x1", clockFaceSize / 2);
+            hourArrow.setAttributeNS(null,"x2", clockFaceSize / 2); //позиционируем
+            hourArrow.setAttributeNS(null,"y1", clockFaceSize / 2);
+            hourArrow.setAttributeNS(null,"y2", hourArrowWidth + clockFaceSize / 2);
+            hourArrow.setAttributeNS(null,"stroke", "black");
+            hourArrow.setAttributeNS(null,"stroke-width", hourArrowHeight);
+        clock.appendChild(hourArrow)
+
+        }   createArrowsTemplate()  //создаем шаблон стрелок
+
+    }   createClockTemplate()   //создаем щаблон циферблата
+        
+    setInterval(clockWork, 1000); // интервал на вызов функции каждую сек
+
+function clockWork (){      //функция на часы
+    let date = new Date();
+    let sec = date.getSeconds();
+    let min = date.getMinutes();
+    let hour = date.getHours();
+    let count = 180; // стрелки на 12
+
+    let secondsArrow = document.getElementById('seconds-arrow')
+    let minuteArrow = document.getElementById('minute-arrow');
+    let hourArrow = document.getElementById('hour-arrow');
+
+    secondsArrow.setAttributeNS(null,"transform", `rotate(${Number(count + (sec * 6))} ${clockFaceSize / 2} ${clockFaceSize / 2})`);
+    //поворот сек стрелки на 6гр каждую сек 360гр в круге / 60сек в круге = 6 гр/сек
+    minuteArrow.setAttributeNS(null,"transform", `rotate(${Number(count + (min * 6))} ${clockFaceSize / 2} ${clockFaceSize / 2})`);
+    //поворот мин стрелки на 6гр каждую мин 360гр в круге / 60мин в круге  = 6 гр/мин
+    hourArrow.setAttributeNS(null,"transform", `rotate(${Number(count + (hour * 30) )} ${clockFaceSize / 2} ${clockFaceSize / 2})`);
+    //поворот час стрелки на 30гр каждый час 360гр в круге / 12час в круге = 30 гр/час
+
+            function digitalClock(){    //функция на электронные часы
+
+                let digital = document.createElementNS(svgNS, "text");
+                    digital.setAttribute('id', 'digital-clock');
+                    digital.setAttribute('x', clockFaceSize / 2);   //позицианируем
+                    digital.setAttribute('y', clockFaceSize / 3);
+                    digital.setAttribute('fill', 'black'); //добавляем сами цифры
+                    digital.setAttribute('text-anchor', 'middle'); //выравниваем по горизонтали
+                    digital.setAttribute('alignment-baseline', 'middle'); //выравниваем по вертикали
+
+                    digital.textContent = `${date.toLocaleTimeString()}`;
+
+                let digiWatch = document.getElementById('digital-clock'); //заменяет уже существующую свг, а не создае новую
+                (digiWatch == undefined) ? clock.appendChild(digital) : clock.replaceChild( digital, digiWatch);
+        
+            }   digitalClock()  // вызываю сразу чтоб всё было на местах после загрузки
+
+   } clockWork() // так же вызываю сразу чтоб всё было на местах после загрузки
+    
+    </script>
+</body>
+</html>

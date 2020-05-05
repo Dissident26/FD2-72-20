@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock By Canvas</title>
+</head>
+<body>
+    
+    <script>
+
+        let radius = 200;   //отклонение от центра циферблата
+        let angle = 30;     // угол позиционирования цифр
+        let clockFaceSize = 500; // размер циферблата
+        let numbersSize = 50;   //размер кругов цифр
+        let hourArrowHeight = 5; //высота часовой стрелки
+        let hourArrowWidth = 125; // ширина часовой стрелки
+        let minuteArrowHeight = 3;//высота минутной стрелки
+        let minuteArrowWidth = 175; // ширина минутной стрелки
+        let secondsArrowHeight = 1; //высота секундной стрелки
+        let secondsArrowWidth = 200; //ширина секундной стрелки
+
+        let clock = document.createElement('div');
+            clock.setAttribute('id', 'clock');
+            clock.setAttribute('height', clockFaceSize);
+            clock.setAttribute('width', clockFaceSize); //создаем родительский див
+        document.body.append(clock);
+
+
+        let clockFace = document.createElement('canvas');   //создаем канвас
+                clockFace.setAttribute('id', 'clock-face');
+                clockFace.setAttribute('width', clockFaceSize); //задаем аттрибуты
+                clockFace.setAttribute('height', clockFaceSize);
+
+                clock.appendChild(clockFace)
+
+        function createClockTemplate (){    //функция для создания шаблона циферблата
+
+        function createClockFace(){ //функция на циферблат
+                
+            let ctx = clockFace.getContext('2d');
+                ctx.clearRect(0, 0, clockFaceSize, clockFaceSize)       //очищаем холст
+                ctx.strokeStyle = 'black';
+                ctx.fillStyle = 'white';    //рисуем круг
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(clockFaceSize / 2, clockFaceSize / 2, clockFaceSize / 2, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                
+            for (let i = 1; i <= 12; i++){  //цикл на добавление цифр и кругов
+
+            let numX = clockFaceSize / 2 + radius * Math.sin((angle * i) / 180 * Math.PI) ; //центр цифр
+            let numY = clockFaceSize / 2 - radius * Math.cos((angle * i) / 180 * Math.PI); 
+
+                ctx.strokeStyle = 'black';
+                ctx.fillStyle = 'white';    //рисуем круг
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(numX, numY, numbersSize / 2, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = "22px Verdana";
+                ctx.fillStyle = 'black';    //добавляем цифры
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';    //ровняем в центр по верт и гориз
+                ctx.fillText(i, numX, numY);
+                ctx.save(); //сохраняем параметры
+            }  
+        }  
+        function clockWork (){      //функция на часы
+let date = new Date();
+let sec = date.getSeconds();
+let min = date.getMinutes();
+let hour = date.getHours();
+                
+                let ctx = document.getElementById('clock-face').getContext('2d');
+
+                    ctx.restore();  //загружаем последние параметры
+                    createClockFace()   //вызываем функцию на отрисовку цифеблата
+
+                    ctx.strokeStyle = 'red';
+                    ctx.fillStyle = 'red';
+                    ctx.lineWidth = secondsArrowHeight; //рисуем сек стрелку
+                    ctx.beginPath()
+                    ctx.translate(clockFaceSize / 2, clockFaceSize / 2); // переходим в центр 
+                    ctx.rotate((Math.PI / 180) * sec * 6); // вращаем
+                    ctx.translate(-clockFaceSize / 2, -clockFaceSize / 2); // возвращаем исходные значения
+                    ctx.moveTo(clockFaceSize / 2, clockFaceSize / 2);
+                    ctx.lineTo(clockFaceSize / 2 , clockFaceSize / 2 - secondsArrowWidth );
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+
+                    ctx.restore();  //загружаем последние параметры
+                    ctx.strokeStyle = 'dimgray';
+                    ctx.fillStyle = 'dimgray';
+                    ctx.lineWidth = minuteArrowHeight;
+                    ctx.beginPath()     //рисуем мин стрелку
+                    ctx.translate(clockFaceSize / 2, clockFaceSize / 2); // переходим в центр 
+                    ctx.rotate((Math.PI / 180) * min * 6); // вращаем
+                    ctx.translate(-clockFaceSize / 2, -clockFaceSize / 2); // возвращаем исходные значения
+                    ctx.moveTo(clockFaceSize / 2, clockFaceSize / 2);
+                    ctx.lineTo(clockFaceSize / 2 , clockFaceSize / 2 - minuteArrowWidth );
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+
+                    ctx.restore();  //загружаем последние параметры
+                    ctx.strokeStyle = 'black';
+                    ctx.fillStyle = 'black';
+                    ctx.lineWidth = hourArrowHeight;
+                    ctx.beginPath()     //рисуем час стрелку
+                    ctx.translate(clockFaceSize / 2, clockFaceSize / 2); // переходим в центр  
+                    ctx.rotate((Math.PI / 180) * hour * 30); // вращаем
+                    ctx.translate(-clockFaceSize / 2, -clockFaceSize / 2); // возвращаем исходные значения
+                    ctx.moveTo(clockFaceSize / 2, clockFaceSize / 2);
+                    ctx.lineTo(clockFaceSize / 2 , clockFaceSize / 2  - hourArrowWidth );
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+                    
+                function digitalWatch(){
+                    ctx.restore();
+                    ctx.font = "22px Verdana";
+                    ctx.fillStyle = 'black';    //добавляем цифры
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';    //ровняем в центр по верт и гориз
+                    ctx.fillText(`${date.toLocaleTimeString()}`, clockFaceSize / 2, clockFaceSize / 3);
+                }   digitalWatch()
+
+            } clockWork()
+            setInterval(clockWork, 1000); // интервал на вызов функции каждую сек
+
+    } createClockTemplate();
+
+        
+
+        
+    </script>
+
+</body>
+</html>
