@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping-Pong Game</title>
+</head>
+<body>
+
+    <script>
+    function startGame(){   //функция обертка
+
+        document.body.innerHTML = ''; //очищаем бади
+
+        const field = {       //настройки поля
+            width : 1000,
+            height : 500,
+            background : "url('assets/field.jpg')",
+            border : '2px solid gray', 
+            borderRadius : 50,
+            tribune : "url('assets/tribune.jpg')",
+            victory : "url('assets/victory.gif')",
+            leftScore : 0,
+            rightScore : 0,
+            startCount : 4,
+            maxScore : 5
+            }
+
+        const plank = {       //настройки планок
+            width : 10,
+            height : 150,
+            speed : 6,
+            leftPosX : 0,
+            leftPosY : 0,
+            rightPosX : field.width,
+            rightPosY : field.height,
+            background : 'black'
+
+        }
+
+        const ball = {      //настройки мяча
+            size : 30,
+            color : "url('assets/ball.png')",
+            posX : field.width / 2, 
+            posY : field.height / 2,
+            speedX : random(8),
+            speedY : random(8),
+            collY : 1, //потеря скорости при столкновении с верхом/низом
+            collX : 1.1,    //потеря скорости при столкновении с право/лево
+            swing : 0,  //начальный угол поворота мяча
+
+            update : function () {      //функция обновления координат
+                let ballElem = document.getElementById('ball');
+                    ballElem.style.left = this.posX + "px";
+                    ballElem.style.top = this.posY + "px";
+                    ballElem.style.transform = 'rotate('+ (this.swing += ball.speedX) +'deg)';  //чем выше скорость тем быстрей вращается
+
+                    let leftPlank = document.getElementById('left-plank');
+                    leftPlank.style.left = plank.leftPosX + "px";
+                    leftPlank.style.top = plank.leftPosY + "px";
+
+                    let rightPlank = document.getElementById('right-plank');
+                    rightPlank.style.left = plank.rightPosX - plank.width + "px";
+                    rightPlank.style.top = plank.rightPosY - plank.height + "px";
+            }
+        }   
+
+        const controls = {      //настройки управления
+            leftUp : 'KeyW',
+            leftDown : 'KeyS',
+            rightUp : 'KeyO',
+            rightDown : 'KeyL'
+        }
+
+            let container = document.createElement('div');      //врапер
+                container.setAttribute('id', 'container');
+                container.style.backgroundImage = field.tribune;
+                container.style.backgroundSize = "16%";
+                container.style.backgroundPosition = "top center";
+                container.style.backgroundRepeat = "repeat-x";
+                container.style.backgroundColor = 'lightgray';
+            document.body.append(container);
+
+            let scoreDiv = document.createElement('div');   //табло счета
+                scoreDiv.setAttribute('id', 'score-div');
+                scoreDiv.style.width = field.width / 5 + 'px';
+                scoreDiv.style.height = field.height / 5 + 'px';
+                scoreDiv.style.border = field.border;
+                scoreDiv.style.borderRadius =  field.borderRadius + 'px';
+                scoreDiv.style.backgroundColor = 'lightgray';
+                scoreDiv.style.position = 'relative';
+                scoreDiv.style.margin = 'auto';
+                scoreDiv.style.verticalAlign = 'middle';
+                scoreDiv.style.textAlign = 'center';
+                scoreDiv.style.fontSize = '82px';
+                scoreDiv.innerHTML = `${field.leftScore} : ${field.rightScore}`;
+            container.appendChild(scoreDiv);
+
+            let fieldDiv = document.createElement('div');       //поле
+                fieldDiv.setAttribute('id', 'field');
+                fieldDiv.style.width = field.width + 'px';
+                fieldDiv.style.height = field.height + 'px';
+                fieldDiv.style.backgroundImage = field.background;
+                fieldDiv.style.backgroundSize = '100%'  //пикча на весь размер
+                fieldDiv.style.border = field.border;
+                fieldDiv.style.margin = 'auto';
+                fieldDiv.style.position = 'relative';
+            container.appendChild(fieldDiv);
+
+            let leftPlank = document.createElement('div');  //левая палка
+                leftPlank.setAttribute('id', 'left-plank');
+                leftPlank.style.width = plank.width + 'px';
+                leftPlank.style.height = plank.height + 'px';
+                leftPlank.style.backgroundColor = plank.background;
+                leftPlank.style.left =  plank.leftPosX + 'px'; 
+                leftPlank.style.position = 'absolute';
+            fieldDiv.appendChild(leftPlank);
+
+            let rightPlank = document.createElement('div'); //правая палка
+                rightPlank.setAttribute('id', 'right-plank');
+                rightPlank.style.width = plank.width + 'px';
+                rightPlank.style.height = plank.height + 'px';
+                rightPlank.style.backgroundColor = plank.background;
+                rightPlank.style.position = 'relative';
+            fieldDiv.appendChild(rightPlank);
+
+            let setBall = document.createElement('div'); //мяч
+                setBall.setAttribute('id', 'ball');
+                setBall.style.width = ball.size + 'px';
+                setBall.style.height = ball.size + 'px';
+                setBall.style.left = ball.posX + 'px';
+                setBall.style.top = ball.posY + 'px';
+                setBall.style.position = 'absolute';
+                setBall.style.backgroundImage = ball.color;
+                setBall.style.backgroundSize = 'cover';
+            fieldDiv.appendChild(setBall)
+
+function frame () {     //функция отрисовки мяча
+    let animation = requestAnimationFrame(frame);
+    ball.posX += ball.speedX; //смещение по оси X
+
+    ball.posY += ball.speedY; //смещение по оси Y
+
+    if(ball.posX + ball.size > field.width - plank.width && ball.posY + ball.size > plank.rightPosY - plank.height && ball.posY + ball.size < plank.rightPosY ){
+        ball.speedX =- ball.speedX * ball.collX;
+        ball.posX = field.width - ball.size - plank.width;  //удар о правую планку
+        //console.log('right')
+    }
+    if(ball.posX < 0 + plank.width && ball.posY > plank.leftPosY && ball.posY < plank.leftPosY + plank.height){
+        ball.speedX =- ball.speedX * ball.collX;
+        ball.posX = 0 + plank.width;  //удар о левую планку
+        //console.log('left')
+    }
+
+    if ( ball.posY + ball.size > field.height ) {   //проверка на выход за пределы выше Y
+            ball.speedY =- ball.speedY * ball.collY;
+            ball.posY = field.height - ball.size;
+    };
+    if ( ball.posY < 0 ) {      //проверка на выход за пределы ниже Y
+            ball.speedY =- ball.speedY * ball.collY;
+            ball.posY = 0;
+        };
+
+    if ( ball.posX + ball.size > field.width + ball.size) {    //проверка на выход за пределы правее X
+            ball.posX = field.width / 2 - ball.size / 2;
+            ball.posY = field.height / 2 - ball.size / 2;
+            //console.log('wall')
+            replay('left');
+            cancelAnimationFrame(animation);
+            
+        };
+    if ( ball.posX < 0 - ball.size) {      //проверка на выход за пределы левее X
+            ball.posX = field.width / 2 - ball.size / 2;
+            ball.posY = field.height / 2 - ball.size / 2;
+            //console.log('wall')
+            replay('right');
+            cancelAnimationFrame(animation);
+            
+        };
+
+        requestAnimationFrame(movePlank);   //обновление координат планок по фпс
+              //обновление координат мяча по фпс
+        ball.update();
+        
+}   ball.update();
+
+let pressed = {     //реализация нажатия нескольких клавиш одновременно
+        leftUp : false,
+        leftDown : false, 
+        rightUp : false,
+        RightDown : false
+    };
+
+    document.addEventListener('keydown', down);
+    document.addEventListener('keyup', up);
+
+     function down (event){ //функция на keydown
+        if(event.code == controls.leftUp){
+            pressed.leftUp = true;
+        }
+        if(event.code == controls.leftDown){
+            pressed.leftDown = true;
+        }
+        if(event.code == controls.rightUp){
+            pressed.rightUp = true;
+        }
+        if(event.code == controls.rightDown){
+            pressed.rightDown = true;
+        }
+        movePlank();
+    };
+
+     function up (event){   //функция на keyup
+        if(event.code == controls.leftUp){
+            pressed.leftUp = false;
+        }
+        if(event.code == controls.leftDown){
+            pressed.leftDown = false;
+        }
+        if(event.code == controls.rightUp){
+            pressed.rightUp = false;
+        }
+        if(event.code == controls.rightDown){
+            pressed.rightDown = false;
+        }
+        movePlank();
+    };   
+
+function movePlank() { //функция отрисовки планок
+
+    if(pressed.leftUp == true){
+        if(plank.leftPosY < plank.speed){     //проверка на границу вверху
+            plank.leftPosY = plank.speed;
+        };  plank.leftPosY -= plank.speed;
+};
+    if(pressed.leftDown == true){
+        if(plank.leftPosY > field.height - plank.height - plank.speed){   //проверка на границу внизу
+            plank.leftPosY = field.height - plank.height - plank.speed;
+        };  plank.leftPosY += plank.speed;
+};  
+
+if(pressed.rightUp == true){
+        if(plank.rightPosY < plank.height + plank.speed){     //проверка на границу вверху
+            plank.rightPosY = plank.height + plank.speed;
+        };  plank.rightPosY -= plank.speed;
+};
+   if(pressed.rightDown == true){
+    if(plank.rightPosY > field.height - plank.speed){   //проверка на границу внизу
+        plank.rightPosY = field.height - plank.speed;
+    };  plank.rightPosY += plank.speed;
+};  
+
+}; 
+
+
+
+let menuDiv = document.createElement('div');
+    menuDiv.setAttribute('id', 'menu-div');
+    menuDiv.insertAdjacentHTML( 'afterbegin', `
+    <br>
+    <h1>Добро пожаловать!</h1><br>
+    <h1>Для управления левой планкой используйте клавиши: </h1>
+    <h1> вверх: "${controls.leftUp[3]}", вниз: "${controls.leftDown[3]}".</h1><br>
+    <h1>Для управления правой планкой используйте клавиши: </h1>
+    <h1> вверх: "${controls.rightUp[3]}", вниз: "${controls.rightDown[3]}".</h1><br>
+    <button id="start-button">Начать Игру!</button>
+    `);
+
+    menuDiv.style.width = field.width + 'px';
+    menuDiv.style.height = field.height + 'px';
+    menuDiv.style.position = 'absolute';
+    menuDiv.style.left = fieldDiv.offsetLeft + fieldDiv.clientLeft + 'px';
+    menuDiv.style.top = fieldDiv.offsetTop + fieldDiv.clientTop + 'px'
+    menuDiv.style.backgroundColor = 'lightgray';
+    menuDiv.style.textAlign = 'center';
+    menuDiv.style.verticalAlign = 'middle';
+    container.appendChild(menuDiv);
+
+    let button = document.getElementById('start-button');
+        button.style.width = '150px';
+        button.style.height = '50px';
+        button.style.fontWeight = 'bold';
+        button.style.borderRadius = '25px';
+    button.addEventListener('click', start);
+    
+    function start (){      //функция на началa движухи
+    let timer = setInterval( () => {    //обратный отсчет
+            field.startCount--;
+            if(field.startCount == 0){
+                frame();
+                clearInterval(timer);
+                menuDiv.hidden = true;
+            }
+
+            menuDiv.style.backgroundColor = 'transparent';
+            menuDiv.style.fontSize = '100px';   //визуализация отсчета
+            menuDiv.innerHTML = `<h1>${field.startCount}</h1>`;
+            
+        }, 1000);
+   
+    };
+
+    function replay (n) {
+        let name = (n == 'left') ? 'Игрок с левой стороны' : 'Игрок с правой стороны';
+        menuDiv.hidden = false;
+        menuDiv.style.fontSize = '54px';
+        menuDiv.innerHTML = `<h1>${name} забил гол!</h1><button id="start-button">Продолжить Игру!</button>`;
+        let button = document.getElementById('start-button');
+            button.style.width = '150px';
+            button.style.height = '50px';   //всякая мишура
+            button.style.fontWeight = 'bold';
+            button.style.borderRadius = '25px';
+        field.startCount = 4;
+        button.addEventListener('click', start)
+
+        ball.speedX = random(8);
+        ball.speedY = random(8);        //снова скорость в рендом
+
+    (n == 'left') ? field.leftScore++ :
+    (n == 'right') ? field.rightScore++ :   //отрисовка счета
+    field.leftScore, field.rightScore;
+    scoreDiv.innerHTML = `${field.leftScore} : ${field.rightScore}`;
+
+        if(field.leftScore == field.maxScore || field.rightScore == field.maxScore){
+
+            menuDiv.hidden = false;
+            menuDiv.innerHTML = `<h2>${name} одержал победу!</h2><button id="start-button">Переиграть?</button>`;
+            menuDiv.style.backgroundImage = field.victory;
+
+            let button = document.getElementById('start-button');
+                button.style.width = '150px';
+                button.style.height = '50px';
+                button.style.fontWeight = 'bold';
+                button.style.borderRadius = '25px';
+            button.addEventListener('click', startGame);
+        };
+
+        
+    };
+
+    function random (n){    //выдает рандом от -n до n, за исключением 0
+    let rand = (Math.round(Math.random()) == 1) ? Math.round(Math.random() * n) : -1 * Math.round(Math.random() * n);
+  return (rand) ? rand : random(n);
+  
+    };
+
+}; startGame();
+   </script>
+
+</body>
+</html>

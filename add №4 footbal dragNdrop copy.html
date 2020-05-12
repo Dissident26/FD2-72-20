@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Drag-n-Drop</title>
+    <style>
+        #field{
+            width: 800px;
+            height: 533px;
+            background: url(assets/football_field.jpg)
+        }
+        #team{
+            display: flex;
+            width: 800px;
+            height: 200px;
+            border: 1px solid black;
+        }
+        #blue{
+            width: 73px;
+            height: 200px;
+            background: url(assets/football_blue.png)
+        }
+        #yellow{
+            width: 73px;
+            height: 200px;
+            background: url(assets/football_yellow.png)
+        }
+        #ball{
+            width: 100px;
+            height: 100px;
+            background: url(assets/football_ball.png);
+        }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+        <div id="field"></div>
+        <div id="team">
+            <div class ="draggable blue" id="blue"></div>
+            <div class ="draggable yellow" id="yellow"></div>
+            <div class ="draggable ball" id="ball"></div>
+        </div>
+    </div>
+
+    <script>
+
+document.addEventListener('mousedown', function down (event){ //вешаем лисенер на весь док
+
+let target = event.target;
+if(!target.classList.contains("draggable")) return;
+
+let shiftX = event.clientX - target.getBoundingClientRect().left;   //задаем переменные перемещения
+let shiftY = event.clientY - target.getBoundingClientRect().top;
+
+let evId = document.getElementById(target.id);
+if(target.id != 'ball'){
+
+//?
+}
+
+let team = document.getElementById('team');
+let blue = document.getElementById('blue');
+let blueTeam = document.getElementsByClassName('draggable blue');
+let yellow = document.getElementById('yellow');
+let yellowTeam = document.getElementsByClassName('draggable yellow');   //ограничение на количество элемов
+let ball = document.getElementById('ball');
+let ballCount = document.getElementsByClassName('draggable ball');
+
+
+//event.target.cloneNode(true);
+
+//(blueTeam.length > 6) ? blue.style.display : target.before(evId.cloneNode());
+//(yellowTeam.length > 6) ? yellow.style.display = 'none' : target.before(evId.cloneNode());
+
+
+        if(target.id == 'blue' ) {
+    //target.after(evId.cloneNode(true))
+   
+    team.replaceChild(evId, target)
+}
+
+
+moveAt(event.pageX, event.pageY);
+
+target.style.position = 'absolute';
+
+function moveAt(pageX, pageY){
+
+  let x = pageX - shiftX;
+  let y = pageY - shiftY;
+
+  target.style.left = x + 'px';
+  target.style.top = y + 'px';
+
+};
+document.addEventListener('mousemove', onMouseMove);
+function onMouseMove(event){    
+    event.preventDefault();
+  moveAt(event.pageX, event.pageY);
+}
+document.addEventListener('mouseup', function onMouseUp(event) {
+    document.removeEventListener('mousemove', onMouseMove);   //по отпусканию мыши убираем листенер
+    document.removeEventListener('mouseup', onMouseUp)
+  event.target.removeEventListener('mousedown', down)
+            event.target.hidden = true;
+            let elemBelow = document.elementFromPoint(event.pageX, event.pageY);
+            console.log(elemBelow)
+            event.target.hidden = false;
+            //if(elemBelow.id !== 'field' && elemBelow.id !== 'team') return;
+            if(elemBelow.id == 'field'){
+                elemBelow.appendChild(event.target)
+            }   
+            if(elemBelow.id == 'team') {
+                target.style.position = ''; //!!!! ложит назад
+                team.appendChild(target)
+            }
+       
+})   
+});
+    </script>
+</body>
+</html>
