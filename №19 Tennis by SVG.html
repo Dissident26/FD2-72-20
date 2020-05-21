@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis By SVG</title>
+</head>
+<body>
+
+    <script>
+        function startGame(){
+
+            document.body.innerHTML = ''; //очищаем бади
+
+            const svgNS = "http://www.w3.org/2000/svg";  //svg инструкции
+
+        const field = {       //настройки поля
+            width : 1000,
+            height : 500,
+            background : 'lightgreen',
+            border : '2px solid gray', 
+            borderRadius : 50,
+            leftScore : 0,
+            rightScore : 0,
+            startCount : 4,
+            maxScore : 5
+            }
+
+        const plank = {       //настройки планок
+            width : 10,
+            height : 150,
+            speed : 6,
+            leftPosX : 0,
+            leftPosY : 0,
+            rightPosX : field.width,
+            rightPosY : field.height,
+            background : 'black'
+
+        }
+
+        const ball = {      //настройки мяча
+            size : 30,
+            color : 'red',
+            posX : field.width / 2, 
+            posY : field.height / 2,
+            speedX : random(8),
+            speedY : random(8),
+            collY : 1, //потеря скорости при столкновении с верхом/низом
+            collX : 1.1,    //потеря скорости при столкновении с право/лево
+            background : 'orange',
+            
+            update : function () {      //функция обновления координат
+
+                    ballBlock.setAttributeNS(null,"transform", `translate(${ball.posX - field.width / 2} ${ball.posY - field.height / 2})`);    //отрисовка мяча
+
+                    leftPlank.setAttributeNS(null,"transform", `translate(${plank.leftPosX} ${plank.leftPosY})`);    //отрисовка левой палки
+
+                    rightPlank.setAttributeNS(null,"transform", `translate(${plank.rightPosX - field.width} ${plank.rightPosY - field.height})`);    //отрисовка правой палки
+            }
+        }   
+
+        const controls = {      //настройки управления
+            leftUp : 'KeyW',
+            leftDown : 'KeyS',
+            rightUp : 'KeyO',
+            rightDown : 'KeyL'
+        }
+
+        function random (n){    //выдает рандом от -n до n, за исключением 0
+    let rand = (Math.round(Math.random()) == 1) ? Math.round(Math.random() * n) : -1 * Math.round(Math.random() * n);
+  return (rand) ? rand : random(n);
+  
+    };
+    
+        let main = document.createElementNS(svgNS, 'svg');
+            main.setAttributeNS(null, 'id', 'main');
+            main.setAttributeNS(null, 'height', field.height);
+            main.setAttributeNS(null, 'width', field.width); //создаем родительский див
+        document.body.appendChild(main);
+
+        let fieldBlock = document.createElementNS(svgNS, 'rect');
+            fieldBlock.setAttributeNS(null, 'id', 'field');
+            fieldBlock.setAttributeNS(null, 'height', field.height);
+            fieldBlock.setAttributeNS(null, 'width', field.width); //создаем поле
+            fieldBlock.setAttributeNS(null, "fill", `${field.background}`);
+            fieldBlock.setAttributeNS(null, "stroke","black");
+        main.appendChild(fieldBlock);
+
+        let ballBlock = document.createElementNS(svgNS, 'circle');
+            ballBlock.setAttributeNS(null, 'id', 'ball');
+            ballBlock.setAttributeNS(null,"cx", ball.posX);
+            ballBlock.setAttributeNS(null,"cy", ball.posY);
+            ballBlock.setAttributeNS(null,"r", ball.size / 2); // рисуем мяч
+            ballBlock.setAttributeNS(null,"fill", `${ball.background}`);
+            ballBlock.setAttributeNS(null,"stroke","black");
+        main.appendChild(ballBlock);
+
+        let leftPlank = document.createElementNS(svgNS, 'rect');  //левая палка
+            leftPlank.setAttributeNS(null, 'id', 'left-plank');
+            leftPlank.setAttributeNS(null, 'height', plank.height);
+            leftPlank.setAttributeNS(null, 'width', plank.width); 
+            leftPlank.setAttributeNS(null, "fill", `${plank.background}`);
+            leftPlank.setAttributeNS(null, "stroke", "white");
+        main.appendChild(leftPlank);
+
+        let rightPlank = document.createElementNS(svgNS, 'rect');  //левая палка
+            rightPlank.setAttributeNS(null, 'id', 'right-plank');
+            rightPlank.setAttributeNS(null, 'height', plank.height);
+            rightPlank.setAttributeNS(null, 'width', plank.width); 
+            rightPlank.setAttributeNS(null,"x", field.width - plank.width);
+            rightPlank.setAttributeNS(null,"y", field.height - plank.height);
+            rightPlank.setAttributeNS(null, "fill", `${plank.background}`);
+            rightPlank.setAttributeNS(null, "stroke", "white");
+        main.appendChild(rightPlank);
+
+        let button = document.createElement('div');
+            button.innerHTML = `<button id="button">Начать Игру</button>`;
+            document.body.appendChild(button);
+            document.getElementById('button').addEventListener('click', start);
+
+        let scoreDiv = document.createElementNS(svgNS, 'text');
+            scoreDiv.setAttribute('x', field.width / 2);   //позицианируем
+            scoreDiv.setAttribute('y', 24); //fontsize / 2 
+            scoreDiv.setAttribute('fill', 'black'); //добавляем сами цифры
+            scoreDiv.setAttribute('text-anchor', 'middle'); //выравниваем по горизонтали
+            scoreDiv.setAttribute('alignment-baseline', 'middle'); //выравниваем по вертикали
+            scoreDiv.setAttribute('font-size', '48px'); //выравниваем по горизонтали
+            scoreDiv.innerHTML = `${field.leftScore} : ${field.rightScore}`
+        main.appendChild(scoreDiv);
+
+            function start (){      //функция на началa движухи
+
+                document.getElementById('button').disabled = true;
+
+                let count = document.createElementNS(svgNS, 'text');
+                count.setAttribute('x', field.width / 2);   //позицианируем
+                count.setAttribute('y', field.height / 3);
+                count.setAttribute('fill', 'black'); //добавляем сами цифры
+                count.setAttribute('text-anchor', 'middle'); //выравниваем по горизонтали
+                count.setAttribute('alignment-baseline', 'middle'); //выравниваем по вертикали
+                count.setAttribute('font-size', '48px'); //выравниваем по горизонтали
+            main.appendChild(count);
+
+    let timer = setInterval( () => {    //обратный отсчет
+            field.startCount--;
+            
+            if(field.startCount == 0){
+                main.removeChild(count);
+                frame();
+                clearInterval(timer);
+               
+            }
+        count.textContent = `${field.startCount}`;
+        ball.posX = field.width / 2;
+        ball.posY = field.height / 2;
+
+        }, 1000);
+
+    };
+
+        function frame () {     //функция отрисовки мяча
+
+    let animation = requestAnimationFrame(frame);
+
+    ball.posX += ball.speedX; //смещение по оси X
+    ball.posY += ball.speedY; //смещение по оси Y
+
+    if(ball.posX + ball.size / 2 > field.width - plank.width && ball.posY + ball.size / 2 > plank.rightPosY - plank.height && ball.posY + ball.size / 2 < plank.rightPosY ){
+        ball.speedX =- ball.speedX * ball.collX;
+        ball.posX = field.width - ball.size / 2 - plank.width;  //удар о правую планку
+        if( pressed.rightUp == true){
+            ball.speedY =- ball.speedX * ball.collX; //такое себе
+        }
+        if( pressed.rightDown == true){
+            ball.speedY =- ball.speedX * ball.collX;    //вроде норм
+        }
+    }
+    if(ball.posX - ball.size / 2 < 0 + plank.width && ball.posY - ball.size / 2 > plank.leftPosY && ball.posY - ball.size / 2 < plank.leftPosY + plank.height){
+        ball.speedX =- ball.speedX * ball.collX;
+        ball.posX = 0 + plank.width + ball.size / 2;  //удар о левую планку
+        if( pressed.rightUp == true){
+            ball.speedY =- ball.speedX * ball.collX; //такое себе
+        }
+        if( pressed.rightDown == true){
+            ball.speedY =- ball.speedX * ball.collX;    //вроде норм
+        }
+    }
+    if ( ball.posY + ball.size / 2 > field.height ) {   //проверка на выход за пределы выше Y
+    ball.speedY =- ball.speedY * ball.collY;
+    ball.posY = field.height - ball.size / 2;
+    };
+    if ( ball.posY - ball.size / 2 < 0 ) {      //проверка на выход за пределы ниже Y
+    ball.speedY =- ball.speedY * ball.collY;
+    ball.posY = ball.size / 2;
+        };
+    if ( ball.posX + ball.size / 2 > field.width) {    //проверка на выход за пределы правее X
+            replay('left');
+            cancelAnimationFrame(animation);
+        };
+    if ( ball.posX - ball.size / 2 < 0 ) {      //проверка на выход за пределы левее X
+            replay('right');
+            cancelAnimationFrame(animation);
+        };
+
+        requestAnimationFrame(movePlank);   //обновление координат планок по фпс
+
+        ball.update();
+        
+}   ball.update();
+
+let pressed = {     //реализация нажатия нескольких клавиш одновременно
+        leftUp : false,
+        leftDown : false, 
+        rightUp : false,
+        RightDown : false
+    };
+
+    document.addEventListener('keydown', down);
+    document.addEventListener('keyup', up);
+
+     function down (event){ //функция на keydown
+        if(event.code == controls.leftUp){
+            pressed.leftUp = true;
+        }
+        if(event.code == controls.leftDown){
+            pressed.leftDown = true;
+        }
+        if(event.code == controls.rightUp){
+            pressed.rightUp = true;
+        }
+        if(event.code == controls.rightDown){
+            pressed.rightDown = true;
+        }
+        movePlank();
+    };
+
+     function up (event){   //функция на keyup
+        if(event.code == controls.leftUp){
+            pressed.leftUp = false;
+        }
+        if(event.code == controls.leftDown){
+            pressed.leftDown = false;
+        }
+        if(event.code == controls.rightUp){
+            pressed.rightUp = false;
+        }
+        if(event.code == controls.rightDown){
+            pressed.rightDown = false;
+        }
+        movePlank();
+    };   
+
+function movePlank() { //функция отрисовки планок
+
+    if(pressed.leftUp == true){
+        if(plank.leftPosY < plank.speed){     //проверка на границу вверху
+            plank.leftPosY = plank.speed;
+        };  plank.leftPosY -= plank.speed;
+};
+    if(pressed.leftDown == true){
+        if(plank.leftPosY > field.height - plank.height - plank.speed){   //проверка на границу внизу
+            plank.leftPosY = field.height - plank.height - plank.speed;
+        };  plank.leftPosY += plank.speed;
+};  
+
+if(pressed.rightUp == true){
+        if(plank.rightPosY < plank.height + plank.speed){     //проверка на границу вверху
+            plank.rightPosY = plank.height + plank.speed;
+        };  plank.rightPosY -= plank.speed;
+};
+   if(pressed.rightDown == true){
+    if(plank.rightPosY > field.height - plank.speed){   //проверка на границу внизу
+        plank.rightPosY = field.height - plank.speed;
+    };  plank.rightPosY += plank.speed;
+};  
+
+}; 
+function replay (n) {
+        
+        ball.speedX = random(8);
+        ball.speedY = random(8);        //снова скорость в рендом
+
+    field.startCount = 4;
+    (n == 'left') ? field.leftScore++ :
+    (n == 'right') ? field.rightScore++ :   //отрисовка счета
+    field.leftScore, field.rightScore;
+    scoreDiv.innerHTML = `${field.leftScore} : ${field.rightScore}`;
+
+        if(field.leftScore == field.maxScore || field.rightScore == field.maxScore){
+            let button = document.getElementById('button');
+            button.disabled = false;
+            button.innerHTML = `Переиграть?`;
+            button.addEventListener('click', startGame)
+        };
+        if(field.leftScore < field.maxScore && field.rightScore < field.maxScore){
+        start();
+        };
+    };
+        } startGame();
+    </script>
+</body>
+</html>

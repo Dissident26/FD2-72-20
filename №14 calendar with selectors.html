@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="text/javascript" src="calendar-template.js"></script>
     <title>Calendar With Selectors</title>
     <style>
-        
     table {
         border-collapse: collapse;
     }
@@ -22,22 +20,27 @@
         color: gray;
     }
     .active-td {
-            color: red;
             background-color: grey;
+            color: white;
         }
-
+        .dim {
+        background-color: lightgrey;
+    }
+    a {
+        cursor: pointer;
+    }
     </style>
 </head>
 <body>
-    
-<script >
 
-    let selectMonth = `<select id='month-select' onchange="check()">`;
+<script>
+
+    let selectMonth = `<select id='month-select' class="check">`;
     for( let i = 0; i <= 11; i++){      //селекты для месяцев
         selectMonth += `<option>${monthName(i)}</option>`
     } selectMonth += `<option hidden selected>Укажите Месяц</option></select>`
 
-    let selectYear = `<select id ='year-select' onchange="check()">`
+    let selectYear = `<select id ='year-select' class="check">`
     for( let i = 1980; i <= 2030; i++){
         selectYear += `<option>${i}</option>`       //селекты для лет
     } selectYear += `<option hidden selected>Укажите Год</option></select>`
@@ -61,27 +64,97 @@ let selectedYear = function (){
     let btnAdd = document.getElementById('add')
     btnAdd.addEventListener('click', add)
     btnAdd.disabled = true;     //всё к кнопке "добавить"
-    function check (){
+    let selectCheck = document.getElementsByClassName('check');
+    for (let i = 0; i < selectCheck.length; i++) {
+        selectCheck[i].addEventListener('change', function (){
         (selectedMonth() == 12 || selectedYear() == 'Укажите Год') ? btnAdd.disabled = true : btnAdd.disabled = false;
+    })
     }
 
 function add (){
     let div = document.createElement('div');
     div.setAttribute('class','calendar');
-    document.body.append(div); 
-    createCalendar (div, selectedYear(), selectedMonth() + 1 )
-    btnRemove.disabled = false;
+let newDate = new Date(Number(selectedYear()), selectedMonth())
 
-    let table = document.getElementsByClassName('calendar');
-    
-    for ( let i = 0; i < table.length; i++){
-        console.log(table[i])
-        table[i].addEventListener('click', (event) => {      //вешаем ивент на таблицу
-    table[i].querySelectorAll('td').forEach(el => el.classList.remove('active-td'));       //убираем клас с каждого тд
+
+    div.addEventListener('click', function swap(event){     //ивент на кнопки
+        
+        //если делать переменные с newDate.getMonth() / newDate.getFullYear() перестает работать
+        //если убрать -1 / +1 перестает работать :(
+
+if(event.target.id == 'decr-year'){     // - год
+    newDate.setFullYear(newDate.getFullYear() - 1)
+    newDate.setMonth(newDate.getMonth() - 1)
+    createCalendar(div, +newDate.getFullYear(), +newDate.getMonth() + 1);   
+}
+if(event.target.id == 'incr-year'){     // + год
+    newDate.setFullYear(newDate.getFullYear() + 1)
+    newDate.setMonth(newDate.getMonth() - 1)
+    createCalendar(div, +newDate.getFullYear(), +newDate.getMonth() + 1);
+}
+if(event.target.id == 'decr-month'){        // - месяц
+    newDate.setFullYear(newDate.getFullYear())
+    newDate.setMonth(newDate.getMonth() - 2)
+    createCalendar(div, +newDate.getFullYear(), +newDate.getMonth() + 1);
+}
+if(event.target.id == 'incr-month'){        // + месяц
+    newDate.setFullYear(newDate.getFullYear())
+    newDate.setMonth(newDate.getMonth())
+    createCalendar(div, +newDate.getFullYear(), +newDate.getMonth() + 1);
+}
+})  
+
+    div.addEventListener('click', (event) => {      //ивент на выделение
+    div.querySelectorAll('td').forEach(el => el.classList.remove('active-td'));       //убираем клас с каждого тд
     if (event.target.tagName !== 'TD') return; //клик только на тд
       event.target.classList.add('active-td');  //добавляем класс к тд по клику
         });
+
+    document.body.append(div); 
+
+    function createCalendar(element, year, month) {     //создание календаря
+
+let table = `<table class="header"><tr><th><a id="decr-year">&lt&lt</a></th><th><a id="decr-month">&lt</a></th><th colspan ="3" id="header-name">${monthName(month-1)}<br>${year + ' годa'}</th><th><a id="incr-month">&gt</a></th><th><a id="incr-year">&gt&gt</a></th><tr><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr>`              
+for (let i = getDay(newDate); i > 0; i--) { // +пред месяц
+    newDate.setDate(newDate.getDate() - 1); //ставим дату -1
+    table += `<td class="dim">${newDate.getDate() + 1 - i}</td>`; // пушим день +1
+    newDate.setDate(newDate.getDate() + 1); //возвращаем дату
+        }
+
+while (newDate.getMonth() == month-1) { // tr каждый понедельник
+table += '<td>' + newDate.getDate() + '</td>';
+if (getDay(newDate) % 7 == 6) { 
+
+    table += '</tr><tr>';
     }
+
+    newDate.setDate(newDate.getDate() + 1);
+}
+
+function counter () {
+    let count = 0;
+        return function() {     
+    count++;
+        return count;       // замкнутый счетчик
+        }
+    }   let count = counter();
+
+        if (getDay(newDate) != 0) {
+            for (let i = getDay(newDate); i < 7; i++) { // +след месяц
+            table += `<td class="dim">${count()}</td>`;     //вставляем замкнутую переменную
+            }
+        }
+
+table += '</tr></table></br>'; // закрываем табл
+element.innerHTML = table;  // присваиваем 
+
+}
+
+    createCalendar (div, +newDate.getFullYear(), +newDate.getMonth() + 1 )
+    
+    btnRemove.disabled = false;
+
+    let table = document.getElementsByClassName('calendar');
   
 }
 
@@ -95,6 +168,15 @@ function remove (){
 }
 
 
+function getDay(newDate) { 
+let day = newDate.getDay();
+if (day == 0) day = 7; // вс последний день
+return day - 1;
+}
+function monthName(n){      //имена месяцев
+let months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь' ];
+return months[n]
+}
 
 
 </script>
