@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON & LocalStorage</title>
+    <style>
+        #main {
+            position: absolute;
+            margin-top: 10%;
+            margin-left: 35%;
+        }
+        #form {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            align-content: center; 
+            justify-content: center; 
+            height: 350px;
+            width: 350px;
+            border: 2px solid black;
+            border-radius: 50%;
+            background: dimgray;
+            color:  #f48c8f;
+        }
+        input {
+            background: lightgray;
+            padding: 3%;
+        }
+        #form-submit {
+            height: 50px;
+            width: 100px;
+            border-radius: 50%;
+            margin-left: 25%;
+            font-weight: bold;
+        }
+        #info {
+            background-color: lightgray;
+            border: 2px solid black;
+            border-radius: 50px;
+            padding: 5%;
+            text-align: center;
+            box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div id="form">
+            <form>
+                <input name ="BDform" type="text" id="name" placeholder="Введите имя..."></br>
+                <input name ="BDform" type="text" id="year" placeholder="Введите год рождения..."></br>
+                <input name ="BDform" type="text" id="month" placeholder="Введите месяц рождения..."></br>
+                <input name ="BDform" type="text" id="day" placeholder="Введите день рождения..."></br>
+                <input name ="BDform" type="submit" id="form-submit">
+            </form>
+        </div>
+        <div id="info"></div>
+    </div>
+    
+    <script>
+        counter = function(){
+            (localStorage.getItem('userData')) ? function () {
+            form.style.display = 'none'; 
+            
+            let obj = JSON.parse(localStorage.getItem('userData'));
+            
+            let date = new Date(new Date().getFullYear(), obj.month - 1, obj.day);
+            let msInYear = (new Date(new Date().getFullYear(),11,31) - new Date(new Date().getFullYear(),0,0)); //86400000
+            let currDate = ( Math.sign(date - Date.now()) === -1 ) ? (date - Date.now() + msInYear) : date - Date.now();
+
+            let secLeft = Math.floor(currDate / 1000);
+                let minLeft = Math.floor(secLeft / 60);
+                let hoursLeft = Math.floor(minLeft / 60);
+                let daysLeft = Math.floor(hoursLeft / 24);
+                let monthLeft = Math.floor(daysLeft / 30);
+
+                    info.innerHTML = `<h2>Здравствуйте ${obj.name}!</h2></br><h2>До вашего дня рождения осталось: </h2><h2>${monthLeft} Месяцев;</h2><h2>${daysLeft} Дней;</h2><h2>${hoursLeft} Часов;</h2><h2>${minLeft} Минут;</h2><h2>${secLeft} Секунд;</h2>`;
+       
+            }() : function () {
+                form.style.display = 'flex';
+                 clearInterval(timer);
+            }
+        }
+
+        let info = document.getElementById('info');
+        let name = document.getElementById('name');
+        let year = document.getElementById('year');
+        let month = document.getElementById('month');
+        let day = document.getElementById('day');
+        let form = document.getElementById('form');
+
+        form.addEventListener('input', function(){
+            (name.value && year.value && month.value && day.value) ? btn.disabled = false : btn.disabled = true;
+        })
+
+function submitBtn (event){
+    event.preventDefault();
+    clearInterval(timer);
+    let obj = {
+        name : name.value,
+        year : year.value,
+        month : month.value,
+        day : day.value
+    }
+    localStorage.setItem('userData', JSON.stringify(obj));
+
+    name.value = '';
+    year.value = '';
+    month.value = '';
+    day.value = '';
+    form.style.display = 'none';
+    info.innerHTML = `<h1>Данные сохранены!</h1>`
+}
+let btn = document.getElementById('form-submit');
+btn.addEventListener('click', submitBtn);
+btn.disabled = true;
+
+counter();
+let timer = setInterval(counter, 1000);
+    </script>
+</body>
+</html>
