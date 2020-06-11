@@ -69,11 +69,15 @@
             let msInYear = (new Date(new Date().getFullYear(),11,31) - new Date(new Date().getFullYear(),0,0)); //86400000
             let currDate = ( Math.sign(date - Date.now()) === -1 ) ? (date - Date.now() + msInYear) : date - Date.now();
 
-            let secLeft = Math.floor(currDate / 1000);
-                let minLeft = Math.floor(secLeft / 60);
-                let hoursLeft = Math.floor(minLeft / 60);
-                let daysLeft = Math.floor(hoursLeft / 24);
-                let monthLeft = Math.floor(daysLeft / 30);
+let monthLeft = Math.floor(currDate  / 1000 / 60 / 60 / 24 / 30);
+
+let daysLeft = Math.floor(currDate  / 1000 / 60 / 60 / 24); 
+
+let hoursLeft = Math.floor((currDate  / 1000 / 60 / 60) - daysLeft * 24);
+
+let minLeft = 60 - new Date().getMinutes();
+
+let secLeft = Math.floor(((currDate / 1000 / 60) - Math.floor(currDate / 1000 / 60)) * 60);
 
                     info.innerHTML = `<h2>Здравствуйте ${obj.name}!</h2></br><h2>До вашего дня рождения осталось: </h2><h2>${monthLeft} Месяцев;</h2><h2>${daysLeft} Дней;</h2><h2>${hoursLeft} Часов;</h2><h2>${minLeft} Минут;</h2><h2>${secLeft} Секунд;</h2>`;
        
