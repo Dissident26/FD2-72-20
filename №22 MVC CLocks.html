@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVC Clocks</title>
+    <style>
+        /* #container{
+            display: flex;
+        } */
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script src="script.js"></script>
+    <script>
+
+        let clockModel = new Model();
+        let clockController = new Controller();
+        let container = document.getElementById('container');
+        let clockSettings = {       //обьект с настройками циферблата
+            _radius : 100,
+            _angle : 30,
+            _clockFaceSize : 250,
+            _numbersSize : 25,
+            _hourArrowHeight : 2.5,
+            _hourArrowWidth : 62.5,
+            _minuteArrowHeight : 1.5,
+            _minuteArrowWidth : 85.5,
+            _secondsArrowHeight : 1,
+            _secondsArrowWidth : 100
+        };
+        
+        let clockViewDom1 = new ViewDOM();      //DOM #1
+        clockViewDom1.init(container, clockModel);
+        clockModel.init(container, clockViewDom1);
+        clockController.init(container, clockModel, clockSettings);
+
+        let clockViewDom2 = new ViewDOM();      //DOM #2
+        clockViewDom2.init(container, clockModel);
+        clockController.init(container, clockModel, clockSettings);
+           
+        let clockViewSvg1 = new ViewSVG();      //SVG #1
+        clockViewSvg1.init(container, clockModel);
+        clockModel.init(container, clockViewSvg1);
+        clockController.init(container, clockModel, clockSettings);
+        
+        let clockViewSvg2 = new ViewSVG();      //SVG #2
+        clockViewSvg2.init(container, clockModel);
+        clockController.init(container, clockModel, clockSettings);
+
+        let clockViewCanvas1 = new ViewCanvas();        //Canvas #1
+        clockViewCanvas1.init(container, clockModel);
+        clockModel.init(container, clockViewCanvas1);
+        clockController.init(container, clockModel, clockSettings);
+
+        let clockViewCanvas2 = new ViewSVG();       //Canvas #2
+        clockViewCanvas2.init(container, clockModel);
+        clockController.init(container, clockModel, clockSettings);
+
+    </script>
+    
+</body>
+</html>
